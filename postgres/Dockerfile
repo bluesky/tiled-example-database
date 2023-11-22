@@ -1,6 +1,9 @@
 # Build a modified Postgresql container specifically for running CI Tests
 FROM --platform=linux/amd64 docker.io/postgres
 
+# Bring in a postgres config file to set up username and password
+COPY postgresql.conf /usr/share/postgresql/postgresql.conf.sample
+
 # Install base utilities
 RUN apt-get update && \
     apt-get install -y build-essential  && \
@@ -18,5 +21,5 @@ ENV PATH=$CONDA_DIR/bin:$PATH
 # Install tiled (conda)
 RUN conda install -y -c conda-forge tiled-client tiled-server
 
-# If DB is empty initialize with tiled test data by running python scripts
-
+# If DB is empty initialize with tiled test data by running python scripts that are in a parent directory
+# RUN tiled catalog init postgresql+asyncpg://postgres:secret@localhost:5432
