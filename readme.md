@@ -1,10 +1,4 @@
-# Tiled Database Example Containers
+# Tiled Database Example Database Containers (Postgres)
 
 This support repository creates and deploys database resources for use with Tiled CI and tiled testing.
-
-## Postgres
-
-```bash
->$ cd postgres
->$ docker build -t tiled-test-postgresql:0.0.1 .
-```
+Split between local for use on a development machine, and CI which contains github actions code and docker compose yaml.

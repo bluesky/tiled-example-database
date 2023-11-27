@@ -1,0 +1,32 @@
+name: Publish Postgres Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Compose
+        uses: docker/compose-action@v1
+        with:
+          compose-file: ci/docker-compose.yml
+
+      - name: Start containers
+        run: docker-compose up -d
+
+      - name: Wait for containers to start
+        run: sleep 10
+
+      - name: Create Tiled catalog
+        run: docker exec -it tiled tiled catalog init postgresql+asyncpg://postgres:secret@localhost:5432
+
+      - name: Stop containers
+        run: docker-compose down
+
