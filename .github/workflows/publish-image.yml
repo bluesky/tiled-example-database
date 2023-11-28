@@ -25,7 +25,7 @@ jobs:
         run: sleep 10
 
       - name: Create Tiled catalog
-        run: docker exec -it tiled tiled catalog init postgresql+asyncpg://postgres:secret@postgres:5432
+        run: docker exec -i tiled tiled catalog init postgresql+asyncpg://postgres:secret@postgres:5432
 
       - name: Stop containers
         run: docker-compose down
