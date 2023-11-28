@@ -1,6 +1,7 @@
         version: '3'
         services:
             postgres:
+                container_name: postgres
                 image: postgres
                 environment:
                     POSTGRES_USER: postgres
@@ -8,7 +9,11 @@
                 ports:
                     - "5432:5432"
             tiled:
-                image: ghcr.io/bluesky/tiled:latest
+                container_name: tiled
+                image: ghcr.io/bluesky/tiled:main
+                environment:
+                    TILED_SINGLE_USER_API_KEY: secret
+                    TILED_TEST_POSTGRESQL_URI: postgresql+asyncpg://postgres:secret@postgres:5432
                 depends_on:
                     - postgres
                 ports:
