@@ -16,7 +16,7 @@ jobs:
       - name: Set up Docker Compose
         uses: isbang/compose-action@v1.5.1
         with:
-          compose-file: "./ci/docker-compose.yml"
+          compose-file: "./docker-compose.yml"
 
       - name: Start containers
         run: docker-compose up -d
