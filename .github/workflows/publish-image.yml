@@ -3,7 +3,7 @@ name: Publish Database Images
 on:
     push:
       tags:
-        - "v*.*.*"
+        - "*.*.*"
 
 jobs:
   build:
