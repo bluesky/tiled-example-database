@@ -8,8 +8,8 @@
                     POSTGRES_PASSWORD: secret
                 ports:
                     - "5432:5432"
-            tiled:
-                container_name: tiled
+            tiled-test-db:
+                container_name: tiled-test-db
                 image: ghcr.io/bluesky/tiled:main
                 environment:
                     TILED_SINGLE_USER_API_KEY: secret

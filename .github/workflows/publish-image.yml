@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,8 +29,12 @@ jobs:
         run: sleep 10
 
       - name: Create Tiled catalog
-        run: docker exec -i tiled tiled catalog init postgresql+asyncpg://postgres:secret@postgres:5432
+        run: docker exec -i tiled-test-db tiled catalog init postgresql+asyncpg://postgres:secret@postgres:5432
+
+      - name: Dump sql data into binary format
+        run: docker exec -i postgres /bin/bash -c "PGPASSWORD=secret pg_dump --username postgres postgres" > tiled_test_db_pg.sql
 
       - name: Stop containers
         run: docker-compose down
 
+    
