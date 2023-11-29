@@ -1,13 +1,11 @@
-name: Publish Postgres Image
+name: Publish Database Images
 
 on:
   push:
     branches:
       - main
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+    tags:
+      - "v*.*.*"
 
 jobs:
   build:
@@ -36,5 +34,18 @@ jobs:
 
       - name: Stop containers
         run: docker-compose down
+
+      - name: Publish .sql files to github release with softprops/action-gh-release action
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            tiled_test_db_pg.sql
+          tag_name: ${{ github.ref }}
+          body: |
+            ${{ github.ref }} : ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     
