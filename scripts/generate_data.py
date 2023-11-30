@@ -8,17 +8,17 @@ from tiled.client import Context, from_context
 from tiled.server.app import build_app
 
 uri = sys.argv[1]
-catalog = from_uri(uri)
+catalog = from_uri(uri, writable_storage="temp")
 with Context.from_app(build_app(catalog)) as context:
     client = from_context(context)
     # Write data
     for i in range(10000):
         client.write_array(
-            [],
+            [i],
             metadata={
                 "number": i,
                 "number_as_string": str(i),
                 "nested": {"number": i, "number_as_string": str(i), "bool": bool(i)},
                 "bool": bool(i),
-            }
+            },
         )
