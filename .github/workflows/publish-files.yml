@@ -42,9 +42,9 @@ jobs:
         with:
           files: |
             tiled_test_db_pg.sql
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
           body: |
-            ${{ github.ref }} : ${{ github.event.head_commit.message }}
+            ${{ github.ref_name }} : ${{ github.event.head_commit.message }}
           draft: false
           prerelease: false
         env:
