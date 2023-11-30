@@ -17,9 +17,7 @@ jobs:
         with:
           python-version: "3.x"
           cache: 'pip'
-      
-      - name: Install Tiled.
-        run: pip install tiled
+      - run: pip install tiled
 
       - name: Start PostgreSQL service in container.
         shell: bash -l {0}
