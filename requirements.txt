@@ -1,1 +1,1 @@
-tiled
+tiled[all]
