@@ -2,8 +2,8 @@ name: Publish Database Images
 
 on:
     push:
-      branches:
-        - main
+      tags:
+        - "*.*.*"
 
 jobs:
   build:
@@ -34,5 +34,18 @@ jobs:
           # Specify Database Connection
           TILED_TEST_POSTGRESQL_URI: postgresql+asyncpg://postgres:secret@localhost:5432
 
-
-    
+      - name: Dump sql data into binary format
+        run: docker exec -i postgres /bin/bash -c "PGPASSWORD=secret pg_dump --username postgres postgres" > tiled_test_db_pg.sql
+  
+      - name: Publish .sql files to github release with action
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            tiled_test_db_pg.sql
+          tag_name: ${{ github.ref }}
+          body: |
+            ${{ github.ref }} : ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
