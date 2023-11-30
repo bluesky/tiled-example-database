@@ -2,48 +2,38 @@ name: Publish Database Images
 
 on:
     push:
-      tags:
-        - "*.*.*"
+      branches:
+        - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
 
-      - name: Set up Docker Compose
-        uses: isbang/compose-action@v1.5.1
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v4
         with:
-          compose-file: "./docker-compose.yml"
+          python-version: "3.x"
+          cache: 'pip'
+      
+      - name: Install Tiled.
+        run: pip install tiled
 
-      - name: Start containers
-        run: docker-compose up -d
+      - name: Start PostgreSQL service in container.
+        shell: bash -l {0}
+        run: | 
+            set -e
+            docker run -d --rm --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=secret -d docker.io/postgres
+            docker ps
 
-      - name: Wait for containers to start
-        run: sleep 10
-
-      - name: Create Tiled catalog
-        run: docker exec -i tiled-test-db tiled catalog init postgresql+asyncpg://postgres:secret@postgres:5432
-
-      - name: Dump sql data into binary format
-        run: docker exec -i postgres /bin/bash -c "PGPASSWORD=secret pg_dump --username postgres postgres" > tiled_test_db_pg.sql
-
-      - name: Stop containers
-        run: docker-compose down
-
-      - name: Publish .sql files to github release with action
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            tiled_test_db_pg.sql
-          tag_name: ${{ github.ref }}
-          body: |
-            ${{ github.ref }} : ${{ github.event.head_commit.message }}
-          draft: false
-          prerelease: false
+      - name: Run Tiled commands.
+        shell: bash -l {0}
+        run: source scripts/run_tiled.sh
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Specify Database Connection
+          TILED_TEST_POSTGRESQL_URI: postgresql+asyncpg://postgres:secret@localhost:5432
+
 
     
