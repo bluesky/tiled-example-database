@@ -27,17 +27,21 @@ jobs:
             docker run -d --rm --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=secret -d docker.io/postgres
             docker ps
 
-      - name: Run Tiled commands.
+      - name: Run Tiled commands
+        id: tiled
         shell: bash -l {0}
         run: source scripts/run_tiled.sh
         env:
           # Specify Database Connection
           TILED_TEST_POSTGRESQL_URI: postgresql+asyncpg://postgres:secret@localhost:5432
 
-      - name: Dump sql data into binary format
+      - name: Dump sql data into binary format when generator finishes
+        id: save
+        if: steps.tiled.conclusion == 'success'
         run: docker exec -i postgres /bin/bash -c "PGPASSWORD=secret pg_dump --username postgres postgres" > tiled_test_db_pg.sql
   
       - name: Publish .sql files to github release with action
+        if: steps.save.conclusion == 'success'
         uses: softprops/action-gh-release@v1
         with:
           files: |
