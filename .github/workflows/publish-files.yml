@@ -35,6 +35,13 @@ jobs:
           # Specify Database Connection
           TILED_TEST_POSTGRESQL_URI: postgresql+asyncpg://postgres:secret@localhost:5432
 
+      - uses: GuillaumeFalourd/wait-sleep-action@v1
+        with:
+          time: '1m' # for 1 minute
+
+      - name: SANITY CHECK - list contents of table nodes
+        run: docker exec postgres psql -U postgres -c "SELECT * FROM nodes limit 100;"
+
       - name: Dump sql data into binary format when generator finishes
         id: save
         if: steps.tiled.conclusion == 'success'
