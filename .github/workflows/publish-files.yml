@@ -41,7 +41,7 @@ jobs:
       - name: Dump sql data into binary format when generator finishes
         id: save
         if: steps.tiled.conclusion == 'success'
-        run: docker exec -i postgres /bin/bash -c "PGPASSWORD=secret pg_dump --username postgres postgres" > tiled_test_db_pg.sql
+        run: docker exec -i postgres /bin/bash -c "PGPASSWORD=secret pg_dump --username postgres --dbname tiled-example-data" > tiled_test_db_pg.sql
       
       - name: SANITY CHECK - list contents of sqlite file
         run : sqlite3 tiled_test_db_sqlite.db "SELECT * FROM nodes LIMIT 10"
