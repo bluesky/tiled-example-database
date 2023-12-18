@@ -24,7 +24,7 @@ jobs:
         shell: bash -l {0}
         run: | 
             set -e
-            docker run -d --rm --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=secret -d docker.io/postgres
+            docker run -d --rm --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=secret -e POSTGRES_DB=tiled-example-data -d docker.io/postgres
             docker ps
 
       - name: Run Tiled commands
