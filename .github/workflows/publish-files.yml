@@ -43,8 +43,9 @@ jobs:
         id: save
         if: steps.tiled.conclusion == 'success'
         run: docker exec -i postgres /bin/bash -c "PGPASSWORD=secret pg_dump --username postgres postgres" > tiled_test_db_pg.sql
+
       - name: SANITY CHECK - list contents of sqlite file
-        run : sqlite3 tiled_test_db_sqlite.db "SELECT * FROM nodes LIMIT 10"
+        run: sqlite3 tiled_test_db_sqlite.db "SELECT * FROM nodes LIMIT 10"
 
       - name: Publish .sql files to github release with action
         if: steps.save.conclusion == 'success'
